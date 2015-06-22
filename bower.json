@@ -1,0 +1,36 @@
+{
+  "name": "vidal-toolbar",
+  "version": "1.0.0",
+  "authors": [
+    "Julien Cheype <julien.cheype@vidal.fr>"
+  ],
+  "description": "A default toolbar for vidal apps",
+  "keywords": [
+    "vidal",
+    "toolbar",
+    "menu"
+  ],
+  "main": "vidal-toolbar.html",
+  "homepage": "https://github.com/vidal-community/polymer-toolbar",
+  "ignore": [
+    "/.*",
+    "/test/",
+    "/demo/",
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "paper-icon-button": "PolymerElements/paper-icon-button#^1.0.0",
+    "paper-toolbar": "PolymerElements/paper-toolbar#^1.0.0",
+    "button-application": "https://github.com/vidal-community/polymer-button-application.git"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "web-component-tester": "*"
+  },
+  "license": "MIT"
+}
