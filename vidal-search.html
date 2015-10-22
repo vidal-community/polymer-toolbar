@@ -1,0 +1,149 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <vidal-search></vidal-search>
+
+@demo
+-->
+<dom-module id="vidal-search">
+
+  <style>
+    :host {
+      @apply(--vidal-search-theme);
+      --paper-input-container-focus-color: #fff;
+      --paper-input-container-color: #ccc;
+      --paper-input-container-input-color: #fff;
+      margin-top: -20px;
+    }
+
+    paper-input{
+      width:150px;
+    }
+
+    paper-input[focused] {
+      width:350px;
+    }
+
+    paper-input{
+      -webkit-transition: all 0.7s ease 0s;
+      -moz-transition: all 0.7s ease 0s;
+      -o-transition: all 0.7s ease 0s;
+      transition: all 0.7s ease 0s;
+    }
+
+
+  #popup-menu {
+    position: absolute;
+    z-index: 999;
+    float: left;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    background-color: #fff;
+    margin-left: 5px;
+    color:#424242;
+  }
+
+  #popup-menu ul {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #popup-menu ul li {
+    display: block;
+    margin: 0;
+    padding: 5px 20px;
+    cursor: pointer;
+  }
+
+  #popup-menu ul li:hover {
+    background-color: #f9f9ff;
+  }
+
+  #spinner {
+    height: 15px;
+    width: 15px;
+  }
+
+
+  </style>
+
+  <template>
+    <iron-ajax
+      auto
+      url="{{url}}"
+      handle-as="json"
+      last-response="{{rawServices}}"></iron-ajax>
+    <paper-input
+      value="{{searchQuery}}"
+      placeHolder="Rechercher"
+      on-keyup="keypressHandler" >
+      <paper-icon-button suffix icon="search"></paper-icon-button>
+    </paper-input>
+    <div id="popup-menu" hidden$="{{!visiblePopup}}">
+      <ul>
+        <template is="dom-repeat" items="{{searchServices}}">
+          <li on-tap="selectSearch" data-item="{{item}}">
+            <span>{{item.shortDescription}}</span>
+          </li>
+        </template>
+      </ul>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'vidal-search',
+    properties: {
+      url: String,
+      searchServices: {
+            type: Array,
+            computed: 'computeSearchServices(rawServices)'
+        },
+      rawServices: Object,
+      visiblePopup:{
+        type: Boolean,
+        value: false
+      }
+    },
+    computeSearchServices: function (rawServices) {
+      var leaf = function (list, node) {
+        if(node.dir && node.nodes)
+          node.nodes.reduce(leaf, list);
+        else if(node.value)
+          list.push(JSON.parse(node.value));
+        return list;
+      }
+      var result =  leaf([], rawServices.node);
+      return result;
+    },
+    keypressHandler: function (event) {
+        this.visiblePopup = event.keyCode == 13;
+    },
+    selectSearch: function (event) {
+      console.log(this.searchQuery);
+      this.visiblePopup = false;
+      var url = event.model.item.url.replace("%s", encodeURI(this.searchQuery));
+      window.location = url;
+    }
+  });
+</script>

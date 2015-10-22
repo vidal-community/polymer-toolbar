@@ -1,0 +1,131 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+<link rel="import" href="../iron-icons/iron-icons.html">
+<link rel="import" href="../paper-button/paper-button.html">
+<link rel="import" href="../paper-spinner/paper-spinner.html">
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <vidal-button-application></vidal-button-application>
+
+@demo
+-->
+<dom-module id="button-application">
+<style>
+  #popup-menu {
+    position: absolute;
+    z-index: 1;
+    float: left;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, .15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, .175);
+    background-color: #fff;
+    margin-left: 5px;
+    color:#424242;
+  }
+
+  #popup-menu ul {
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  #popup-menu ul li {
+    display: block;
+    margin: 0;
+    padding: 5px 20px;
+    cursor: pointer;
+  }
+
+  #popup-menu ul li:hover {
+    background-color: #f9f9ff;
+  }
+
+  #spinner {
+    height: 15px;
+    width: 15px;
+  }
+
+</style>
+<template>
+  <iron-ajax
+  id="ajax"
+  url="{{url}}"
+  handle-as="json"
+  on-response="handleResponse"
+  debounce-duration="300"></iron-ajax>
+
+  <paper-button id="appButton" on-click="applicationPopup">
+  <iron-icon icon="menu"></iron-icon>
+  Applications
+  <paper-spinner id="spinner"></paper-spinner>
+</paper-button>
+<div id="popup-menu" hidden$="{{!listItems.length}}">
+  <ul>
+    <template is="dom-repeat" items="{{listItems}}">
+      <li on-tap="selectApp">
+        <iron-icon src="{{item.icon}}"></iron-icon>
+        <span>{{item.shortDescription}}</span></li>
+      </template>
+    </ul>
+  </div>
+</template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'button-application',
+    properties:{
+      listItems: Array,
+      url: String
+    },
+    ready: function() {
+      var menu = this.$['popup-menu'];
+
+      var self = this;
+      self.listItems = [];
+      document.addEventListener('click', function(e) {
+        self.listItems = [];
+      });
+      window.addEventListener('WebComponentsReady', function() {
+        menu.style.minWidth = self.$.appButton.offsetWidth + 'px';
+      });
+    },
+    applicationPopup: function(e) {
+      e.stopPropagation();
+
+      this.$.spinner.active = true;
+      this.$.ajax.generateRequest();
+    },
+    handleResponse: function(ev, res) {
+      var nodes = res.response.node.nodes.map(function(n) {
+        var node = JSON.parse(n.value);
+        if (node.meta) {
+          node.icon = node.url + node.meta.icon;
+        }
+        return node;
+      });
+      this.$.spinner.reset();
+      this.listItems = nodes;
+    },
+    selectApp: function(evt) {
+      this.listItems = [];
+    }
+  });
+
+</script>
