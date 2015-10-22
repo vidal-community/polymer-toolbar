@@ -12,7 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../paper-toolbar/paper-toolbar.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../iron-icons/iron-icons.html">
-<link rel="import" href="../button-application/button-application.html">
+<link rel="import" href="vidal-search.html">
+<link rel="import" href="button-application.html">
 
 <!--
 An element providing a solution to no problem in particular.
@@ -47,9 +48,9 @@ Example:
             <div title>Title</div>
             <content></content>
             <div class="flex"></div>
-            <button-application url="{{url}}"></button-application>
-            <paper-icon-button icon="help">
-            </paper-icon-button>
+            <vidal-search url="{{searchUrl}}"></vidal-search>
+            <button-application url="{{applicationsUrl}}"></button-application>
+            <paper-icon-button icon="help"></paper-icon-button>
         </paper-toolbar>
   </template>
 
@@ -60,8 +61,23 @@ Example:
   Polymer({
     is: 'vidal-toolbar',
     properties:{
-      url: String
+        url: String,
+        env: String,
+        applicationsUrl: {
+            type: String,
+            computed: 'computeApplicationsUrl(url, env)'
+        },
+        searchUrl: {
+            type: String,
+            computed: 'computeSearchUrl(url, env)'
+        }
     },
+    computeApplicationsUrl: function(url, env){
+      return url + '/v2/keys/' + env + '/service/APPLICATION';
+    },
+    computeSearchUrl: function(url, env){
+      return url + '/v2/keys/' + env + '/service/search';
+    }
   });
 
 </script>

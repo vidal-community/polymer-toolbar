@@ -19,9 +19,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="../../sinonjs/sinon.js"></script>
   <script>
 server = sinon.fakeServer.create();
+
 server.autoRespond = true;
 server.respondImmediately = true;
-server.respondWith('http://etcdserver/',
+server.respondWith('http://etcdserver/v2/keys/prod/service/search',
+  [
+    200,
+    {'Content-Type': 'application/json'},
+    JSON.stringify({"action":"get","node":{"key":"/prod/service/search","dir":true,"nodes":[{"key":"/prod/service/search/DRV","dir":true,"nodes":[{"key":"/prod/service/search/DRV/vulcain","value":"{\"description\":\"Recherche de DRV par dénomination ou identifiant\",\"url\":\"http://vulcain.vidal.net/#/rcp-search?nameOrIdentifier=%s\",\"shortDescription\":\"Recherche de DRV\",\"name\":\"search/DRV\",\"meta\":null}","expiration":"2015-10-20T17:55:10.773261234+02:00","ttl":76,"modifiedIndex":96467376,"createdIndex":96467376}],"modifiedIndex":55267191,"createdIndex":55267191},{"key":"/prod/service/search/DOCID","dir":true,"modifiedIndex":66138025,"createdIndex":66138025},{"key":"/prod/service/search/RCP","dir":true,"nodes":[{"key":"/prod/service/search/RCP/vulcain-recherche","value":"{\"description\":\"Recherche RCP par dénomination ou identifiant\",\"url\":\"http://vulcain-recherche.vidal.net/#?title=%s\",\"shortDescription\":\"Recherche de RCP\",\"name\":\"search/RCP\",\"meta\":null}","expiration":"2015-10-20T17:55:12.097259982+02:00","ttl":78,"modifiedIndex":96467396,"createdIndex":96467396}],"modifiedIndex":84988912,"createdIndex":84988912},{"key":"/prod/service/search/mono","dir":true,"nodes":[{"key":"/prod/service/search/mono/QUERY","dir":true,"nodes":[{"key":"/prod/service/search/mono/QUERY/monoviewer","value":"{\"description\":\"Recherche de monographie\",\"url\":\"http://monoviewer.vidal.net/api/mono/search?query=%s\",\"shortDescription\":\"Recherche de monographie\",\"name\":\"search/mono/QUERY\",\"meta\":null}","expiration":"2015-10-20T17:55:49.590907596+02:00","ttl":115,"modifiedIndex":96467658,"createdIndex":96467658}],"modifiedIndex":89363976,"createdIndex":89363976}],"modifiedIndex":89363976,"createdIndex":89363976},{"key":"/prod/service/search/labo","dir":true,"nodes":[{"key":"/prod/service/search/labo/QUERY","dir":true,"nodes":[{"key":"/prod/service/search/labo/QUERY/monoviewer","value":"{\"description\":\"Recherche de laboratoire\",\"url\":\"http://monoviewer.vidal.net/api/labo/search?query=%s\",\"shortDescription\":\"Recherche de laboratoire\",\"name\":\"search/labo/QUERY\",\"meta\":null}","expiration":"2015-10-20T17:55:49.593094383+02:00","ttl":115,"modifiedIndex":96467660,"createdIndex":96467660}],"modifiedIndex":89363978,"createdIndex":89363978}],"modifiedIndex":89363978,"createdIndex":89363978},{"key":"/prod/service/search/package","dir":true,"nodes":[{"key":"/prod/service/search/package/QUERY","dir":true,"nodes":[{"key":"/prod/service/search/package/QUERY/dael-viewer","value":"{\"description\":\"Recherche de presentation\",\"url\":\"http://dael-viewer.vidal.net/#/searchByPackage?limit=30\u0026name=%s\",\"shortDescription\":\"Recherche de presentation\",\"name\":\"search/package/QUERY\",\"meta\":null}","expiration":"2015-10-20T17:55:43.525564844+02:00","ttl":109,"modifiedIndex":96467600,"createdIndex":96467600}],"modifiedIndex":89806736,"createdIndex":89806736}],"modifiedIndex":89806736,"createdIndex":89806736}],"modifiedIndex":55267191,"createdIndex":55267191}})
+  ]
+);
+
+server.respondWith('http://etcdserver/v2/keys/prod/service/APPLICATION',
     [
     200,
     {'Content-Type': 'application/json'},
@@ -59,9 +68,8 @@ server.respondWith('http://etcdserver/',
 
     <p>An example of <code>&lt;vidal-toolbar&gt;</code>:</p>
 
-    <vidal-toolbar url="http://etcdserver/">
+    <vidal-toolbar url="http://etcdserver" env="prod">
       hello
     </vidal-toolbar>
-
   </body>
 </html>
